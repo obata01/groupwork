@@ -19,7 +19,7 @@ class PygameWindow:
         text = font.render(txt, True, (255,255,255))
         self.screen.blit(text, (40, self.h))
         pygame.display.update()
-        self.h += 30
+        self.h += size 
 
 
     def clear(self):
@@ -41,12 +41,6 @@ class PygameWindow:
         gc.collect()
         self.h += 440
         
-        
-#    def blit_image(self, img_pass):
-#        with pygame.image.load(img_pass) as img:
-#            self.screen.blit(img, (40, self.h))
-#            pygame.display.update()
-#        self.h += 500
         
     
     def clear_(self):
@@ -70,3 +64,15 @@ class PygameWindow:
                 elif event.type == pygame.KEYDOWN and \
                         (event.key == K_RETURN or event.key == K_KP_ENTER):
                     return "enter"
+
+    def event_012(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN and event.key == K_0:
+                    return 0
+                elif event.type == pygame.KEYDOWN and event.key == K_1:
+                    return 1
+                elif event.type == pygame.KEYDOWN and event.key == K_2:
+                    return 2
+                else:
+                    print('Please push 0 or 1 or 2')

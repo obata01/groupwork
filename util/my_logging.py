@@ -23,5 +23,6 @@ class Logger:
 
     def debug(self, msg):
         self.logger.debug(msg)
+
     def now_string(self):
         return str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

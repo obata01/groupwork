@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #! -*- coding: utf-8 -*-
 import sys
-from my_logging import Logger 
+from util.my_logging import Logger 
 
 # Get command arguments and set loggin level
 logger = Logger(level='DEBUG')
