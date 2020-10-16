@@ -14,7 +14,7 @@ def detect_img(yolo):
     #yolo.close_session()
     
     for i, score in enumerate(r_scores):
-        if score <= 0.8:
+        if score <= 0.5:
             r_scores[i] = None
             r_classes[i] = None
 
