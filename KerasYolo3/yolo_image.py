@@ -9,7 +9,7 @@ def detect_img(yolo):
     image = Image.open(IMAGE_PATH)
     r_image, r_classes, r_scores = yolo.detect_image(image)
     r_image.show()
-    r_image.save('output/detected_img.png', quality=90)
+    r_image.save('./KerasYolo3/output/detected_img.png', quality=90)
     image.close()
     #yolo.close_session()
 

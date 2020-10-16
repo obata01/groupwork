@@ -11,8 +11,8 @@ import pickle
 
 
 IMG_SIZE = 112
-PATH = '/content/drive/My Drive/Colab Notebooks/dive_into_code/GroupWork'
-MODEL_PATH = os.path.join(PATH, 'EfficientNet/efficient01.hdf5')
+PATH = '/home/pi/groupwork'
+MODEL_PATH = os.path.join(PATH, 'EfficientNet/efficient02.hdf5')
 
 
 class EfficientnetModel:
@@ -20,14 +20,16 @@ class EfficientnetModel:
         self.model = self.load_model()
         # self.classes = {'cola': 0, 'gogo': 1, 'grape': 2, 'heytea': 3, 'pocari': 4}
         self.classes = {0: 'cola', 1: 'gogo', 2: 'grape', 3: 'heytea', 4: 'pocari'}
-        self.map = {0: 3, 1: 0, 2: 2, 3: 1, 4: 4}    # {efficient-classes: item-master}
+        self.item_map = {0: 3, 1: 0, 2: 2, 3: 1, 4: 4}    # {efficient-classes: item-master}
 
     def predict(self, img_path):
-        with Image.open(img_path) as img:
-            img = np.asarray(img.convert('RGB').resize((112, 112)))[np.newaxis, :, :, :] / 255
-            print(self.model)
-            pred = self.model.predict_proba(img)
-        return pred, self.classes[np.argmax(pred)]
+        img = Image.open(img_path)
+        img = np.asarray(img.convert('RGB').resize((IMG_SIZE, IMG_SIZE)))[np.newaxis, :, :, :] / 255
+        pred = self.model.predict_proba(img)
+        class_idx = []
+        idx = self.item_map[np.argmax(pred)]
+        class_idx.append(idx)
+        return pred, class_idx
 
     def predict2(self, img_path):
         self.predict(img_path)
@@ -62,21 +64,5 @@ class EfficientnetModel:
 
 
     def load_model(self):
-        K.clear_session()
-        efficientnet_url = "https://tfhub.dev/google/efficientnet/b0/feature-vector/1"
-        efficientnet_layer = hub.KerasLayer(efficientnet_url,
-                                    input_shape=(IMG_SIZE,IMG_SIZE,3))
-        # 学習済み重みは固定
-        efficientnet_layer.trainable = False
-
-        model = tf.keras.models.Sequential()
-        model.add(efficientnet_layer)
-        model.add(layers.Dense(1024, activation=LeakyReLU(alpha=0.01)))
-        model.add(layers.Dropout(0.4))
-        model.add(layers.Dense(5, activation='sigmoid'))
-
-        model.compile(optimizer=tf.keras.optimizers.Adam(),
-                      loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
-                      metrics=['mae', 'acc'])   
-        model.load_weights(MODEL_PATH)
+        model = load_model(MODEL_PATH, custom_objects={"KerasLayer": hub.KerasLayer})
         return model

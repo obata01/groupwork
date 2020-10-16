@@ -74,5 +74,3 @@ class PygameWindow:
                     return 1
                 elif event.type == pygame.KEYDOWN and event.key == K_2:
                     return 2
-                else:
-                    print('Please push 0 or 1 or 2')

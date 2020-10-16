@@ -40,8 +40,8 @@ def shutter():
         # pi camera 用のライブラリーを使用して、画像を取得
         with picamera.PiCamera() as camera:
             camera.resolution = (300,400)
-            camera.start_preview()
-            sleep(2.000)
+            #camera.start_preview()
+            #sleep(2.000)
             camera.capture(photofile)
     except Exception as e:
         logger.error('The shutter process was not terminated normally. {}'.format(e))    
@@ -89,12 +89,14 @@ def load_models():
         logger.debug('Load models process ended normally.')
          
 
-def predicts(model1, model2, type, img_pass=None):
+def predicts(model1, model2, type, img_path=None):
     logger.debug('Predict process start...')
     try:
         if type == 1:
-            scores, classes = model1.predict(img_pass)
+            logger.debug('EfficientNet model predict start')
+            scores, classes = model1.predict(img_path)
         elif type == 2:
+            logger.debug('YOLO model predict start')
             _, classes, scores = yolo_image.detect_img(model2) 
         return classes, scores
     except Exception as e:
@@ -111,11 +113,11 @@ def print_results(buy_items, total_money):
     pywin.blit('Name              Money(tax in)')
     pywin.blit('----------------  ----------------')
     for name, money in buy_items.items(): 
-        pywin.blit('{}{}{}'.format(name, ' '*(18 - len(name), money)))
+        pywin.blit('{}{}{}'.format(name, ' '*(18 - len(name)), money))
     pywin.blit(' ')
     pywin.blit('Total')
     pywin.blit('----------------------------------')
-    pywin.blit(total_money)
+    pywin.blit(str(int(total_money)))
     pywin.blit(' ')
     pywin.blit('Thank you for purchase!!', 40)
     sleep(4)
@@ -155,7 +157,7 @@ def check_results(scores, classes):
     return mod_scores, mod_classes
 
 
-def print_scan_result(scores, classes, sub_sum):
+def print_scan_result(scores, classes, sub_sum, type):
     for i, (score, class_) in enumerate(zip(scores, classes)):
         item = im.items[class_]
         sub_sum += item[1]
@@ -164,8 +166,11 @@ def print_scan_result(scores, classes, sub_sum):
     pywin.blit('---------------------------------------------------------')
     pywin.blit('Number of items : {}'.format(len(classes)))
     pywin.blit('Amount of money : {}'.format(sub_sum))
-    pywin.blit_image(img_pass = "./KerasYolo3/output/detected_img.png")
-    return sub_sum    
+    if type == 1:
+        pywin.blit_image(img_pass = photo_filename)
+    elif type == 2:
+        pywin.blit_image(img_pass = "./KerasYolo3/output/detected_img.png")
+    return sub_sum 
 
 
 
@@ -214,6 +219,7 @@ if __name__ == '__main__':
             shutter()
 
             # predict
+            print('photo_filename', photo_filename)
             classes, scores = predicts(eff_model, yolo_model, type, photo_filename)
 
             # result check
@@ -222,7 +228,7 @@ if __name__ == '__main__':
             buy_items_dict = buy_summary(classes, buy_items_dict, im.items)
 
             # Print scan result
-            sub_sum = print_scan_result(scores, classes, sub_sum)
+            sub_sum = print_scan_result(scores, classes, sub_sum, type)
             
             # Determine or Cancel
             pywin.blit('To cancel, press "esc". Press "Enter" to confirm.')
@@ -236,20 +242,9 @@ if __name__ == '__main__':
             sum_ += sub_sum
             continue
                 
-           # # Select additional scan
-           # pywin.blit('Press "esc" to continue scanning products. Press "Enter" to check out.')
-           # eve = pywin.event()
-           # if eve == "esc":
-           #     pywin.clear_()
-           # else:
-           #     pywin.blit('---------------------------------------------------------')
-           #     pywin.blit("Total:{}RWF".format(sum_))
-          #      pywin.blit("Thank you!!")
-          #      sleep(10)
-          #      continue 
 
-
-        print_results(buy_items_dict, sum)
+        print_results(buy_items_dict, sum_)
+        continue
 
             # close precessing
             
