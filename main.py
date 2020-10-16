@@ -108,15 +108,15 @@ def predicts(model1, model2, type, img_pass=None):
 def print_results(buy_items, total_money):
     logger.debug('Print accounting results process start...')
     pywin.clear_()
-    pywin.blit('Name              Money(tax in)
+    pywin.blit('Name              Money(tax in)')
     pywin.blit('----------------  ----------------')
     for name, money in buy_items.items(): 
-        pywin.blit('{}{}{}'.format(name, ' '*(18 - len(name), money))
-    pywin.blit('')
+        pywin.blit('{}{}{}'.format(name, ' '*(18 - len(name), money)))
+    pywin.blit(' ')
     pywin.blit('Total')
     pywin.blit('----------------------------------')
     pywin.blit(total_money)
-    pywin.blit('')
+    pywin.blit(' ')
     pywin.blit('Thank you for purchase!!', 40)
     sleep(4)
 
@@ -126,7 +126,7 @@ def buy_summary(scan_items, buy_items, master):
     for idx in scan_items:
         item, money = master[idx] 
         if item not in buy_items.keys():
-            buy_items[item} = money 
+            buy_items[item] = money 
         else:
             buy_items[item] += money 
     return buy_items
@@ -190,7 +190,7 @@ if __name__ == '__main__':
 
     while True:
         sum_ = 0   # For total money
-        buy_items = {} 
+        buy_items_dict = {} 
         while True:
             pywin.clear_()
             sub_sum = 0  # For money per scan
@@ -219,7 +219,7 @@ if __name__ == '__main__':
             # result check
 
             # make dict of buy items
-            buy_items = 
+            buy_items_dict = buy_summary(classes, buy_items_dict, im.items)
 
             # Print scan result
             sub_sum = print_scan_result(scores, classes, sub_sum)
@@ -249,7 +249,7 @@ if __name__ == '__main__':
           #      continue 
 
 
-        print_results(buy_items, sum)
+        print_results(buy_items_dict, sum)
 
             # close precessing
             
