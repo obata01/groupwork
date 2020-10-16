@@ -17,6 +17,11 @@ def detect_img(yolo):
 
         r_classes.append(class_id)
         r_scores.append(score)
+        
+    for i, score in enumerate(r_scores):
+        if score <= 0.5:
+            r_scores[i] = None
+            r_classes[i] = None
 
     return r_image, r_classes, r_scores
 
