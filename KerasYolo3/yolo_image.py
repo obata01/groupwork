@@ -12,6 +12,11 @@ def detect_img(yolo):
     r_image.save('output/detected_img.png', quality=90)
     image.close()
     #yolo.close_session()
+    
+    for i, score in enumerate(r_scores):
+        if score <= 0.8:
+            r_scores[i] = None
+            r_classes[i] = None
 
     return r_image, r_classes, r_scores
 
