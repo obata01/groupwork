@@ -6,7 +6,7 @@ from pygame.locals import *
 
 
 class PygameWindow:
-    def __init__(self, size=(800, 850)):
+    def __init__(self, size=(800, 900)):
         pygame.init()
         self.screen_size = size
         self.screen = pygame.display.set_mode(size)
@@ -25,19 +25,28 @@ class PygameWindow:
             self.screen.blit(text, (point[0], point[1]))
         pygame.display.update()
         self.h += size
-        
-
-    def clear(self):
-        pygame.display.flip()
 
 
+    def blit_2col(self, txt1, txt2, size=30, w=300):
+        font = pygame.font.SysFont(self.font, size)
+        text1 = font.render(txt1, True, (255,255,255))
+        text2 = font.render(txt2, True, (255,255,255))
+        self.screen.blit(text1, (40, self.h))
+        self.screen.blit(text2, (w, self.h))
+        pygame.display.update()
+        self.h += size
 
-    def event_enter(self):
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN and \
-                        (event.key == K_RETURN or event.key == K_KP_ENTER):
-                    return
+
+    def blit_3col(self, txt1, txt2, txt3, size=30, w1=300, w2=500):
+        font = pygame.font.SysFont(self.font, size)
+        text1 = font.render(txt1, True, (255,255,255))
+        text2 = font.render(txt2, True, (255,255,255))
+        text3 = font.render(txt3, True, (255,255,255))
+        self.screen.blit(text1, (40, self.h))
+        self.screen.blit(text2, (w1, self.h))
+        self.screen.blit(text3, (w2, self.h))
+        pygame.display.update()
+        self.h += size
 
 
     def blit_image(self, img_path, point=None, img_size=None):
@@ -47,21 +56,26 @@ class PygameWindow:
         else:
             show_img = pygame.transform.scale(show_img, (img_size[0], img_size[1]))
         if point == None:
-            self.screen.blit(show_img, (40, self.h))
+            self.screen.blit(show_img, (100, self.h))
         else:
             self.screen.blit(show_img, (point[0], point[1]))
         pygame.display.update()
         del show_img
         gc.collect()
-        self.h += 440
-        
+        self.h += 410
+
+
+    def clear(self):
+        pygame.display.flip()
         
     
     def clear_(self):
         self.h = 30
         self.screen.fill((0,0,0))
         pygame.display.update()
-    
+
+
+
     def event_enter(self):
         while True:
             for event in pygame.event.get():
@@ -79,7 +93,7 @@ class PygameWindow:
                         (event.key == K_RETURN or event.key == K_KP_ENTER):
                     return "enter"
 
-    def event_012(self):
+    def event_number(self):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN and event.key == K_0:
@@ -88,3 +102,9 @@ class PygameWindow:
                     return 1
                 elif event.type == pygame.KEYDOWN and event.key == K_2:
                     return 2
+                elif event.type == pygame.KEYDOWN and event.key == K_3:
+                    return 3 
+                elif event.type == pygame.KEYDOWN and event.key == K_4:
+                    return 4 
+                elif event.type == pygame.KEYDOWN and event.key == K_5:
+                    return 5 
