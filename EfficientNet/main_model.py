@@ -25,7 +25,7 @@ class EfficientnetModel:
     def predict(self, img_path):
         img = Image.open(img_path)
         img = np.asarray(img.convert('RGB').resize((IMG_SIZE, IMG_SIZE)))[np.newaxis, :, :, :] / 255
-        pred = self.model.predict_proba(img)
+        pred = self.model.predict_proba(img)[0]
         class_idx = []
         idx = self.item_map[np.argmax(pred)]
         class_idx.append(idx)
