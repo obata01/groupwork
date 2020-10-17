@@ -4,7 +4,7 @@ import datetime
 class Logger:
     def __init__(self, level):
         self.logger = logging.getLogger(__name__)
-        fmt = "[{}] {} - {} ".format('%(levelname)s', self.now_string(), '%(message)s')
+        fmt = "[{}] {} - {} - {} ".format('%(levelname)s', '%(asctime)s', '%(name)s', '%(message)s')
 
         level = level.lower()
         if level == 'info':

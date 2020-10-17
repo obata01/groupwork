@@ -19,6 +19,9 @@ from time import sleep
 import sys
 from KerasYolo3 import yolo_image
 from KerasYolo3.yolo import YOLO
+from yolov4.tflite import YOLOv4
+from yolo4 import yolo4
+
 
 import pygame
 from pygame.locals import *
@@ -80,9 +83,17 @@ def load_models():
         eff_model = EfficientnetModel() 
 
         logger.debug('YOLO model load precess start...')
+        # YOLOv3
         yolo_args = {'image': True, 'input': './path2your_video', 'output': ''}
         yolo_model = YOLO(**yolo_args)
+
+        # YOLOv4
+        #yolo_model = YOLOv4()
+        #yolo_model.classes = "yolo4/bottle_classes.txt"
+        #yolo_model.load_tflite("yolo4/yolov4.tflite")
+
         return eff_model, yolo_model
+
     except Exception as e:
         logger.error('Load models error. {}'.format(e))
     else:
@@ -97,7 +108,8 @@ def predicts(model1, model2, type, img_path=None):
             scores, classes = model1.predict(img_path)
         elif type == 2:
             logger.debug('YOLO model predict start')
-            _, classes, scores = yolo_image.detect_img(model2) 
+            _, classes, scores = yolo_image.detect_img(model2) # YOLOv3
+            #_, classes, scores = yolo4.detect_img(model2) # YOLOv4
         return classes, scores
     except Exception as e:
         logger.error('Predict error. {}'.format(e))
@@ -108,19 +120,22 @@ def predicts(model1, model2, type, img_path=None):
           
 
 def print_results(buy_items, total_money):
+    sep = '#'
+    n_sep = 36
     logger.debug('Print accounting results process start...')
     pywin.clear_()
     pywin.blit('Name              Money(tax in)')
-    pywin.blit('----------------  ----------------')
+    pywin.blit(sep*n_sep)
     for name, money in buy_items.items(): 
         pywin.blit('{}{}{}'.format(name, ' '*(18 - len(name)), money))
-    pywin.blit(' ')
+    pywin.blit('')
     pywin.blit('Total')
-    pywin.blit('----------------------------------')
+    pywin.blit(sep*n_sep)
     pywin.blit(str(int(total_money)))
-    pywin.blit(' ')
-    pywin.blit('Thank you for purchase!!', 40)
-    sleep(4)
+    pywin.blit('')
+    pywin.blit('')
+    pywin.blit('Thank you for purchase!!', 45)
+    sleep(10)
 
 
 
@@ -167,11 +182,21 @@ def print_scan_result(scores, classes, sub_sum, type):
     pywin.blit('Number of items : {}'.format(len(classes)))
     pywin.blit('Amount of money : {}'.format(sub_sum))
     if type == 1:
-        pywin.blit_image(img_pass = photo_filename)
+        pywin.blit_image(img_path = photo_filename)
     elif type == 2:
-        pywin.blit_image(img_pass = "./KerasYolo3/output/detected_img.png")
-    return sub_sum 
+        pywin.blit_image(img_path = "./KerasYolo3/output/detected_img.png")
+    return sub_sum
 
+
+def hello():
+    pywin.clear_()
+    img_w = pywin.screen_size[0]*0.95
+    img_h = img_w*0.685
+    pywin.blit_image(img_path='./data/img/hello.jpg', point=(40, 30), img_size=(img_w, img_h))
+    pywin.blit('To start pless Enter.', 40, point=(40, 30+img_h+30))
+    pywin.event_enter()
+    sleep(0.5)
+    pywin.clear_()
 
 
 
@@ -179,7 +204,7 @@ if __name__ == '__main__':
     logger.info('Start processing the cash register.')
 
     # モデル+重みを読込み
-    eff_model, yolo_model = load_models()
+   # eff_model, yolo_model = load_models()
     
     # 音声ファイル初期化
     sound()
@@ -196,17 +221,16 @@ if __name__ == '__main__':
     while True:
         sum_ = 0   # For total money
         buy_items_dict = {} 
+        hello()
         while True:
             pywin.clear_()
             sub_sum = 0  # For money per scan
-            pywin.blit('Hello!!')
-            sleep(2) 
 
             pywin.blit('--------------------------------------------------------------')
             pywin.blit('Please press the butto from the following.') 
-            pywin.blit('       1: Single item scan.', size=20)
-            pywin.blit('       2: Multiple items scan.', size=20)
-            pywin.blit('       0: Finish and proceed to accounting.', size=20)
+            pywin.blit('       1: Single item scan.', size=25)
+            pywin.blit('       2: Multiple items scan.', size=25)
+            pywin.blit('       0: Finish and proceed to accounting.', size=25)
             type = pywin.event_012()
             if type == 0:
                 break
