@@ -19,6 +19,8 @@ from time import sleep
 import sys
 from KerasYolo3 import yolo_image
 from KerasYolo3.yolo import YOLO
+from yolov4.tflite import YOLOv4
+from yolo4 import yolo4
 
 import pygame
 from pygame.locals import *
@@ -80,8 +82,15 @@ def load_models():
         eff_model = EfficientnetModel() 
 
         logger.debug('YOLO model load precess start...')
-        yolo_args = {'image': True, 'input': './path2your_video', 'output': ''}
-        yolo_model = YOLO(**yolo_args)
+        # YOLOv3
+        #yolo_args = {'image': True, 'input': './path2your_video', 'output': ''}
+        #yolo_model = YOLO(**yolo_args)
+
+        # YOLOv4
+        yolo_model = YOLOv4()
+        yolo_model.classes = "yolo4/bottle_classes.txt"
+        yolo_model.load_tflite("yolo4/yolov4.tflite")
+
         return eff_model, yolo_model
     except Exception as e:
         logger.error('Load models error. {}'.format(e))
@@ -97,7 +106,8 @@ def predicts(model1, model2, type, img_path=None):
             scores, classes = model1.predict(img_path)
         elif type == 2:
             logger.debug('YOLO model predict start')
-            _, classes, scores = yolo_image.detect_img(model2) 
+            #_, classes, scores = yolo_image.detect_img(model2) # YOLOv3
+            _, classes, scores = yolo4.detect_img(model2) # YOLOv4
         return classes, scores
     except Exception as e:
         logger.error('Predict error. {}'.format(e))
