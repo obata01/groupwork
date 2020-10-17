@@ -21,10 +21,7 @@ from KerasYolo3 import yolo_image
 from KerasYolo3.yolo import YOLO
 from yolov4.tflite import YOLOv4
 from yolo4 import yolo4
-<<<<<<< HEAD
 
-=======
->>>>>>> d76a418f780415065c6dd714255bdcd91ea2aa3b
 
 import pygame
 from pygame.locals import *
@@ -87,7 +84,6 @@ def load_models():
 
         logger.debug('YOLO model load precess start...')
         # YOLOv3
-<<<<<<< HEAD
         yolo_args = {'image': True, 'input': './path2your_video', 'output': ''}
         yolo_model = YOLO(**yolo_args)
 
@@ -95,15 +91,6 @@ def load_models():
         #yolo_model = YOLOv4()
         #yolo_model.classes = "yolo4/bottle_classes.txt"
         #yolo_model.load_tflite("yolo4/yolov4.tflite")
-=======
-        #yolo_args = {'image': True, 'input': './path2your_video', 'output': ''}
-        #yolo_model = YOLO(**yolo_args)
-
-        # YOLOv4
-        yolo_model = YOLOv4()
-        yolo_model.classes = "yolo4/bottle_classes.txt"
-        yolo_model.load_tflite("yolo4/yolov4.tflite")
->>>>>>> d76a418f780415065c6dd714255bdcd91ea2aa3b
 
         return eff_model, yolo_model
 
@@ -121,13 +108,8 @@ def predicts(model1, model2, type, img_path=None):
             scores, classes = model1.predict(img_path)
         elif type == 2:
             logger.debug('YOLO model predict start')
-<<<<<<< HEAD
             _, classes, scores = yolo_image.detect_img(model2) # YOLOv3
             #_, classes, scores = yolo4.detect_img(model2) # YOLOv4
-=======
-            #_, classes, scores = yolo_image.detect_img(model2) # YOLOv3
-            _, classes, scores = yolo4.detect_img(model2) # YOLOv4
->>>>>>> d76a418f780415065c6dd714255bdcd91ea2aa3b
         return classes, scores
     except Exception as e:
         logger.error('Predict error. {}'.format(e))
