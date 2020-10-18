@@ -8,7 +8,7 @@ def detect_img(yolo):
     image, bboxes = yolo.inference(IMAGE_PATH)
 
     r_image = Image.fromarray(image)
-    r_image.save('../output/detected_img.png', quality=90)
+    r_image.save('output/detected_img.png', quality=90)
 
     r_classes = []
     r_scores = []
@@ -18,9 +18,11 @@ def detect_img(yolo):
             r_scores.append(bbox[-1])
         
     for i, score in enumerate(r_scores):
-        if score <= 0.5:
+        if score <= 0.8:
             r_scores[i] = None
             r_classes[i] = None
+
+    print(bboxes)
 
     return r_image, r_classes, r_scores
 

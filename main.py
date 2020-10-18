@@ -90,8 +90,9 @@ def load_models():
     """機械学習モデルの読み込み処理"""
     try:
         # Efficientnet
-        logger.info('Efficientnet model load precess start...')
-        eff_model = EfficientnetModel() 
+        #logger.info('Efficientnet model load precess start...')
+        #eff_model = EfficientnetModel() 
+        eff_model = 5
 
         logger.info('YOLO model load precess start...')
         # YOLOv3
@@ -125,6 +126,7 @@ def predicts(model1, model2, type_, img_path=None):
             logger.info('YOLO model predict start')
             #_, classes, scores = yolo_image.detect_img(model2) # YOLOv3
             _, classes, scores = yolo4.detect_img(model2) # YOLOv4
+            classes, scores = cut_array(type_, scores, classes)
         return classes, scores
     
     except Exception as e:
@@ -134,6 +136,26 @@ def predicts(model1, model2, type_, img_path=None):
         logger.debug('classes : {}'.format(r_classes))
         logger.info('Predict process ended normally.')
           
+
+
+def cut_array(type_, scores, classes):
+    logger.info(sys._getframe().f_code.co_name + ' - Process start...')
+    try:
+        n_none = scores.count(None)
+        n = len(scores)
+        n_del = n - type_
+        if n > type_:
+            if n_none >= n_del:
+                for i in range(n_del):
+                    scores.remove(None) 
+                    classes.remove(None)
+        return classes, scores
+
+    except Exception as e:
+        logger.error('{} - Process error. {}'.format(sys._getframe().f_code.co_name, e))
+    else:
+        logger.info('{} - Prpcess ended normally.'.format(sys._getframe().f_code.co_name))
+
 
 
 def buy_summary(scan_items, buy_items, master):
