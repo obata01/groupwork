@@ -29,10 +29,10 @@ from pygame.locals import *
 import picamera
 
 # YOLO
-from KerasYolo3 import yolo_image
-from KerasYolo3.yolo import YOLO
-#from yolov4.tflite import YOLOv4
-#from yolo4 import yolo4
+#from KerasYolo3 import yolo_image
+#from KerasYolo3.yolo import YOLO
+from yolov4.tflite import YOLOv4
+from yolo4 import yolo4
 
 # Efficientnet
 from EfficientNet.main_model import EfficientnetModel
@@ -95,13 +95,13 @@ def load_models():
 
         logger.info('YOLO model load precess start...')
         # YOLOv3
-        yolo_args = {'image': True, 'input': './path2your_video', 'output': ''}
-        yolo_model = YOLO(**yolo_args)
+        #yolo_args = {'image': True, 'input': './path2your_video', 'output': ''}
+        #yolo_model = YOLO(**yolo_args)
 
         # YOLOv4
-        #yolo_model = YOLOv4()
-        #yolo_model.classes = "yolo4/bottle_classes.txt"
-        #yolo_model.load_tflite("yolo4/yolov4.tflite")
+        yolo_model = YOLOv4()
+        yolo_model.classes = "yolo4/bottle_classes.txt"
+        yolo_model.load_tflite("yolo4/yolov4.tflite")
 
         return eff_model, yolo_model
 
@@ -294,7 +294,7 @@ def window_scan_result(scores, classes, sub_sum, type_, error_count, n_detected_
         if type_ == 1:
             pywin.blit_image(img_path = photo_filename)
         elif type_ >= 2:
-            pywin.blit_image(img_path = "./KerasYolo3/output/detected_img.png")
+            pywin.blit_image(img_path = "./output/detected_img.png")
         
         return sub_sum
     
