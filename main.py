@@ -102,7 +102,6 @@ def load_models():
         yolo_model = YOLOv4()
         yolo_model.classes = "yolo4/bottle_classes.txt"
         yolo_model.load_tflite("yolo4/yolov4.tflite")
-
         return eff_model, yolo_model
 
     except Exception as e:
@@ -124,8 +123,8 @@ def predicts(model1, model2, type_, img_path=None):
         # YOLOによるpredict
         elif type_ >= 2:
             logger.info('YOLO model predict start')
-            _, classes, scores = yolo_image.detect_img(model2) # YOLOv3
-            #_, classes, scores = yolo4.detect_img(model2) # YOLOv4
+            #_, classes, scores = yolo_image.detect_img(model2) # YOLOv3
+            _, classes, scores = yolo4.detect_img(model2) # YOLOv4
         return classes, scores
     
     except Exception as e:
