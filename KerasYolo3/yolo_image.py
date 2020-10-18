@@ -9,8 +9,10 @@ def detect_img(yolo):
     image = Image.open(IMAGE_PATH)
     r_image, r_classes, r_scores = yolo.detect_image(image)
     r_image.save('output/detected_img.png', quality=90)
-    #image.close()
-    
+    image.close()
+
+    r_classes = list(r_classes)
+    r_scores = list(r_scores)
     for i, score in enumerate(r_scores):
         if score <= 0.5:
             r_scores[i] = None

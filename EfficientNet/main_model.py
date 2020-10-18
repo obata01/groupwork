@@ -8,7 +8,9 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.models import load_model
 from PIL import Image
 import pickle
-
+import matplotlib.pyplot as plt
+from util.my_logging import Logger
+logger = Logger(level='DEBUG')
 
 IMG_SIZE = 112
 PATH = '/home/pi/groupwork'
@@ -19,17 +21,45 @@ class EfficientnetModel:
     def __init__(self):
         self.model = self.load_model()
         # self.classes = {'cola': 0, 'gogo': 1, 'grape': 2, 'heytea': 3, 'pocari': 4}
-        self.classes = {0: 'cola', 1: 'gogo', 2: 'grape', 3: 'heytea', 4: 'pocari'}
-        self.item_map = {0: 3, 1: 0, 2: 2, 3: 1, 4: 4}    # {efficient-classes: item-master}
+        self.classes = {0: '', 1: 'gogo', 2: 'grape', 3: 'heytea', 4: 'pocari'}
+        self.item_map = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4}    # {efficient-classes: item-master}
 
     def predict(self, img_path):
         img = Image.open(img_path)
+        # 中心座標を計算
+        new_size = 224 
+        center_x = int(img.width / 2)
+        center_y = int(img.height / 2)
+        # トリミング
+        img = img.crop((center_x - new_size / 2, center_y - new_size / 2, center_x + new_size / 2, center_y + new_size / 2))
+        #plt.imshow(img)
+        #plt.show()
         img = np.asarray(img.convert('RGB').resize((IMG_SIZE, IMG_SIZE)))[np.newaxis, :, :, :] / 255
         pred = self.model.predict_proba(img)[0]
+        logger.debug(pred)
+        predmax = []
         class_idx = []
+        predmax.append(max(pred))
         idx = self.item_map[np.argmax(pred)]
+
+        if idx == 0 and predmax[0] < 0.9995:
+            predmax[0] = None
+            idx = None
+        elif idx == 1 and predmax[0] < 0.9995:
+            predmax[0] = None
+            idx = None
+        elif idx == 2 and predmax[0] < 0.999:
+            predmax[0] = None
+            idx = None
+        elif idx == 3 and predmax[0] < 0.999:
+            predmax[0] = None
+            idx = None
+        elif idx == 4 and predmax[0] < 0.999:
+            predmax[0] = None
+            idx = None 
+
         class_idx.append(idx)
-        return pred, class_idx
+        return predmax, class_idx
 
     def predict2(self, img_path):
         self.predict(img_path)

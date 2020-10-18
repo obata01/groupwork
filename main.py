@@ -29,10 +29,10 @@ from pygame.locals import *
 import picamera
 
 # YOLO
-#from KerasYolo3 import yolo_image
-#from KerasYolo3.yolo import YOLO
-from yolov4.tflite import YOLOv4
-from yolo4 import yolo4
+from KerasYolo3 import yolo_image
+from KerasYolo3.yolo import YOLO
+#from yolov4.tflite import YOLOv4
+#from yolo4 import yolo4
 
 # Efficientnet
 from EfficientNet.main_model import EfficientnetModel
@@ -90,19 +90,19 @@ def load_models():
     """機械学習モデルの読み込み処理"""
     try:
         # Efficientnet
-        #logger.info('Efficientnet model load precess start...')
-        #eff_model = EfficientnetModel() 
-        eff_model = 5
+        logger.info('Efficientnet model load precess start...')
+        eff_model = EfficientnetModel() 
+        #eff_model = 5
 
         logger.info('YOLO model load precess start...')
         # YOLOv3
-        #yolo_args = {'image': True, 'input': './path2your_video', 'output': ''}
-        #yolo_model = YOLO(**yolo_args)
+        yolo_args = {'image': True, 'input': './path2your_video', 'output': ''}
+        yolo_model = YOLO(**yolo_args)
 
         # YOLOv4
-        yolo_model = YOLOv4()
-        yolo_model.classes = "yolo4/bottle_classes.txt"
-        yolo_model.load_tflite("yolo4/yolov4.tflite")
+        #yolo_model = YOLOv4()
+        #yolo_model.classes = "yolo4/bottle_classes.txt"
+        #yolo_model.load_tflite("yolo4/yolov4.tflite")
         return eff_model, yolo_model
 
     except Exception as e:
@@ -124,16 +124,18 @@ def predicts(model1, model2, type_, img_path=None):
         # YOLOによるpredict
         elif type_ >= 2:
             logger.info('YOLO model predict start')
-            #_, classes, scores = yolo_image.detect_img(model2) # YOLOv3
-            _, classes, scores = yolo4.detect_img(model2) # YOLOv4
+            _, classes, scores = yolo_image.detect_img(model2) # YOLOv3
+            #_, classes, scores = yolo4.detect_img(model2) # YOLOv4
             classes, scores = cut_array(type_, scores, classes)
+        logger.debug('scores  : {}'.format(scores))
+        logger.debug('classes : {}'.format(classes))
         return classes, scores
     
     except Exception as e:
         logger.error('Predict error. {}'.format(e))
     else:
-        logger.debug('scores  : {}'.format(r_scores))
-        logger.debug('classes : {}'.format(r_classes))
+        logger.debug('scores  : {}'.format(scores))
+        logger.debug('classes : {}'.format(classes))
         logger.info('Predict process ended normally.')
           
 
@@ -315,7 +317,8 @@ def window_scan_result(scores, classes, sub_sum, type_, error_count, n_detected_
         if type_ == 1:
             pywin.blit_image(img_path = photo_filename)
         elif type_ >= 2:
-            pywin.blit_image(img_path = "./output/detected_img.png")
+            #pywin.blit_image(img_path = photo_filename)
+            pywin.blit_image(img_path = "./output/detected_img.png") # Debug
         
         return sub_sum
     
