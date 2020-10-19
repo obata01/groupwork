@@ -42,10 +42,10 @@ class EfficientnetModel:
         predmax.append(max(pred))
         idx = self.item_map[np.argmax(pred)]
 
-        if idx == 0 and predmax[0] < 0.9995:
+        if idx == 0 and predmax[0] < 0.9999965:
             predmax[0] = None
             idx = None
-        elif idx == 1 and predmax[0] < 0.9995:
+        elif idx == 1 and predmax[0] < 0.999:
             predmax[0] = None
             idx = None
         elif idx == 2 and predmax[0] < 0.999:

@@ -25,13 +25,13 @@ def detect_img(yolo):
     for i, score in enumerate(r_scores):
         flg_None = 0
         if dict_label[r_classes[i]] == 'hey-tea':
-            if score <= 0.63:
+            if score <= 0.7:
                 flg_None = 1
         elif dict_label[r_classes[i]] == 'coca-cola':
             if score <= 0.8:
                 flg_None = 1
         elif dict_label[r_classes[i]] == 'grapefruit-squash':
-            if score <= 0.93:
+            if score <= 0.8:
                 flg_None = 1
         elif dict_label[r_classes[i]] == 'gogo-tea':
             if score <= 0.79:
